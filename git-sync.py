@@ -78,9 +78,7 @@ def setup_repo(repo, dest, branch):
         click.echo('Status {modified_status}: {ahead_status}'.format(**locals()))
         sh(['git', 'add', '.'], cwd=dest)
         if modified_status:
-            sh(['git', 'commit', '-a'], cwd=dest)
-        elif '[ahead ' in ahead_status:
-            sh(['git', 'commit', '-a'], cwd=dest)
+            sh(['git', 'commit', '-m', '"Save Modified"'], cwd=dest)
 
 
 def sync_repo(repo, dest, branch, rev):
