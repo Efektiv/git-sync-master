@@ -76,13 +76,11 @@ def setup_repo(repo, dest, branch):
         modified_status = sh(shlex.split('git status -s'), cwd=dest)
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
         if modified_status:
-            raise ValueError(
-                'There are uncommitted changes at {dest} that syncing '
-                'would overwrite'.format(**locals()))
+            output = sh(['git', 'add', '.'], cwd=dest)
+            output = sh(['git', 'commit', '-m', ''], cwd=dest)
         if '[ahead ' in ahead_status:
-            raise ValueError(
-                'This branch is ahead of the requested repo and syncing would '
-                'overwrite the changes: {ahead_status}'.format(**locals()))
+            output = sh(['git', 'add', '.'], cwd=dest)
+            output = sh(['git', 'commit', '-m', '"Updates from Server"'], cwd=dest)
 
 
 def sync_repo(repo, dest, branch, rev):
@@ -96,9 +94,9 @@ def sync_repo(repo, dest, branch, rev):
 
     # reset working copy
     if not rev:
-        output = sh(['git', 'reset', '--hard', 'origin/' + branch], cwd=dest)
+        output = sh(['git', 'pull', 'origin', branch], cwd=dest)
     else:
-        output = sh(['git', 'reset', '--hard', rev], cwd=dest)
+        output = sh(['git', 'pull'], cwd=dest)
 
     # clean untracked files
     sh(['git', 'clean', '-dfq'], cwd=dest)
