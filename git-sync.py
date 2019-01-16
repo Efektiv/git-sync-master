@@ -79,7 +79,7 @@ def setup_repo(repo, dest, branch):
         sh(['git', 'add', '.'], cwd=dest)
         if modified_status:
             sh(['git', 'commit', '-a'], cwd=dest)
-        else if '[ahead ' in ahead_status:
+        elif '[ahead ' in ahead_status:
             sh(['git', 'commit', '-a'], cwd=dest)
 
 
