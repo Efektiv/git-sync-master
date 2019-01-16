@@ -75,12 +75,12 @@ def setup_repo(repo, dest, branch):
         # ahead_status: commited but not pushed
         modified_status = sh(shlex.split('git status -s'), cwd=dest)
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
+        click.echo('Status {modified_status}: {ahead_status}'.format(**locals()))
+        sh(['git', 'add', '.'], cwd=dest)
         if modified_status:
-            output = sh(['git', 'add', '.'], cwd=dest)
-            output = sh(['git', 'commit', '-m', '"Updates from Server"'], cwd=dest)
+            sh(['git', 'commit', '-m', 'Updates from Server'], cwd=dest)
         if '[ahead ' in ahead_status:
-            output = sh(['git', 'add', '.'], cwd=dest)
-            output = sh(['git', 'commit', '-m', '"Updates from Server"'], cwd=dest)
+            sh(['git', 'commit', '-m', 'Updates from Server'], cwd=dest)
 
 
 def sync_repo(repo, dest, branch, rev):
