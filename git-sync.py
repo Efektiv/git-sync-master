@@ -77,7 +77,7 @@ def setup_repo(repo, dest, branch):
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
         if modified_status:
             output = sh(['git', 'add', '.'], cwd=dest)
-            output = sh(['git', 'commit', '-m', ''], cwd=dest)
+            output = sh(['git', 'commit', '-m', '"Updates from Server"'], cwd=dest)
         if '[ahead ' in ahead_status:
             output = sh(['git', 'add', '.'], cwd=dest)
             output = sh(['git', 'commit', '-m', '"Updates from Server"'], cwd=dest)
