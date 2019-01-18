@@ -79,7 +79,7 @@ def setup_repo(repo, dest, branch):
         sh(shlex.split('git add .'), cwd=dest)
         if modified_status:
             sh(shlex.split('git commit -m "Save Modified"'), cwd=dest)
-
+        sh(shlex.split('git push'), cwd=dest)
 
 def sync_repo(repo, dest, branch, rev):
     """
