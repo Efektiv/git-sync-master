@@ -78,7 +78,7 @@ def setup_repo(repo, dest, branch):
         click.echo('Status {modified_status}: {ahead_status}'.format(**locals())) 
         
         sh(['git', 'rm', '--cached', './configuration.php'], cwd=dest)
-        sh(['git', 'commit', '--amend', '-CHEAD'], cwd=dest)+     
+        sh(['git', 'commit', '--amend', '-CHEAD'], cwd=dest)
         sh(['git', 'push'], cwd=dest)
         sh(['git', 'pull'], cwd=dest)
         sh(['git', 'add', '.'], cwd=dest)
