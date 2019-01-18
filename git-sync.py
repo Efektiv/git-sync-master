@@ -76,9 +76,10 @@ def setup_repo(repo, dest, branch):
         modified_status = sh(shlex.split('git status -s'), cwd=dest)
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
         click.echo('Status {modified_status}: {ahead_status}'.format(**locals())) 
+        sh(shlex.split('git rm configuration.php'), cwd=dest)   
         sh(shlex.split('git pull'), cwd=dest)  
         sh(shlex.split('git add .'), cwd=dest)
-        sh(shlex.split('git rm configuration.php'), cwd=dest)   
+        sh(shlex.split('git add configuration.php --force'), cwd=dest)   
         if modified_status:
             sh(shlex.split('git commit -m "Save Modified"'), cwd=dest)
         sh(shlex.split('git push'), cwd=dest)
