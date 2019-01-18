@@ -80,7 +80,7 @@ def setup_repo(repo, dest, branch):
         output = sh(['git', 'pull'], cwd=dest)
         output = sh(['git', 'add', '.'], cwd=dest)
         output = sh(['git', 'config', '--global', '--edit'], cwd=dest)
-        output = sh(['git', 'commit', '--amend', '--reset-author'], cwd=dest)
+        output = sh(['git', 'commit', '-m', 'Test'], cwd=dest)
         output = sh(['git', 'push'], cwd=dest)
 
 def sync_repo(repo, dest, branch, rev):
