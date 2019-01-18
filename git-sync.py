@@ -78,9 +78,10 @@ def setup_repo(repo, dest, branch):
         click.echo('Status {modified_status}: {ahead_status}'.format(**locals())) 
         
         output = sh(['git', 'pull'], cwd=dest)
-        output = sh(['git', 'add', '.'], cwd=dest)
+        output = sh(['git', 'add'], cwd=dest)
+        output = sh(['git', 'add', '-u'], cwd=dest)     
         output = sh(['git', 'config', '--global', '--edit'], cwd=dest)
-        output = sh(['git', 'commit', '-a'], cwd=dest)
+        output = sh(['git', 'commit', '-m', "$(read -p 'Commit description: ')"], cwd=dest)
         output = sh(['git', 'push'], cwd=dest)
 
 def sync_repo(repo, dest, branch, rev):
