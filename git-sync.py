@@ -75,7 +75,8 @@ def setup_repo(repo, dest, branch):
         # ahead_status: commited but not pushed
         modified_status = sh(shlex.split('git status -s'), cwd=dest)
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
-        click.echo('Status {modified_status}: {ahead_status}'.format(**locals()))
+        click.echo('Status {modified_status}: {ahead_status}'.format(**locals())) 
+        sh(shlex.split('git pull'), cwd=dest)
         sh(shlex.split('git add .'), cwd=dest)
         if modified_status:
             sh(shlex.split('git commit -m "Save Modified"'), cwd=dest)
