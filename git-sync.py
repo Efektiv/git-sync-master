@@ -77,14 +77,14 @@ def setup_repo(repo, dest, branch):
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
         click.echo('Status {modified_status}: {ahead_status}'.format(**locals())) 
         
-        sh(['git', 'rm', '--cached', './configuration.php'], cwd=dest)
-        sh(['git', 'commit', '--amend', '-CHEAD'], cwd=dest)
-        sh(['git', 'push'], cwd=dest)
-        sh(['git', 'pull'], cwd=dest)
-        sh(['git', 'add', '.'], cwd=dest)
-        sh(['git', 'add', '-f', './configuration.php'], cwd=dest)   
-        sh(['git', 'commit', '-m', 'Test'], cwd=dest)
-        sh(['git', 'push'], cwd=dest)
+        output = sh(['git', 'rm', '--cached', './configuration.php'], cwd=dest)
+        output = sh(['git', 'commit', '--amend', '-CHEAD'], cwd=dest)
+        output = sh(['git', 'push'], cwd=dest)
+        output = sh(['git', 'pull'], cwd=dest)
+        output = sh(['git', 'add', '.'], cwd=dest)
+        output = sh(['git', 'add', '-f', './configuration.php'], cwd=dest)   
+        output = sh(['git', 'commit', '-m', 'Test'], cwd=dest)
+        output = sh(['git', 'push'], cwd=dest)
 
 def sync_repo(repo, dest, branch, rev):
     """
