@@ -64,7 +64,7 @@ def setup_repo(repo, dest, branch):
                 'Requested repo `...{repo_name}` but destination already '
                 'has a remote repo cloned: {current_remote}'.format(**locals()))
 
-        # and check that the branches match as well
+         # and check that the branches match as well
         if branch.lower() != current_branch:
             raise ValueError(
                 'Requested branch `{branch}` but destination is '
@@ -75,11 +75,14 @@ def setup_repo(repo, dest, branch):
         # ahead_status: commited but not pushed
         modified_status = sh(shlex.split('git status -s'), cwd=dest)
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
-        click.echo('Status {modified_status}: {ahead_status}'.format(**locals())) 
-        
-        output = sh(['git', 'pull'], cwd=dest)
-        output = sh(['git', 'add', '.'], cwd=dest)
-        output = sh(['git', 'add', '-u'], cwd=dest)
+        if modified_status:
+            raise ValueError(
+                'There are uncommitted changes at {dest} that syncing '
+                'would overwrite'.format(**locals()))
+        if '[ahead ' in ahead_status:
+            raise ValueError(
+                'This branch is ahead of the requested repo and syncing would '
+                'overwrite the changes: {ahead_status}'.format(**locals()))
 
 def sync_repo(repo, dest, branch, rev):
     """
