@@ -76,9 +76,7 @@ def setup_repo(repo, dest, branch):
         modified_status = sh(shlex.split('git status -s'), cwd=dest)
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
         if modified_status:
-            raise ValueError(
-                'There are uncommitted changes at {dest} that syncing '
-                'would overwrite'.format(**locals()))
+            sh(shlex.split('git stash'), cwd=dest)
         if '[ahead ' in ahead_status:
             raise ValueError(
                 'This branch is ahead of the requested repo and syncing would '
