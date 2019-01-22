@@ -40,12 +40,11 @@ def setup_repo(repo, dest, branch):
     dest = os.path.expanduser(dest)
 
     repo_name = urlparse(repo).path
-    sh(['rm', '-R', dest])
      
     # if no git repo exists at dest, clone the requested repo
     if not os.path.exists(os.path.join('/git/', '.git')):
         output = sh(
-            ['git', 'clone', '--no-checkout', '-b', branch, repo, dest])
+            ['git', 'pull', 'origin', branch])
         click.echo('Cloned ...{repo_name}'.format(**locals()))
 
     else:
@@ -92,7 +91,7 @@ def sync_repo(repo, dest, branch, rev):
     output = sh(['git', 'fetch', 'origin', branch], cwd=dest)
     click.echo('Fetched {branch}: {output}'.format(**locals()))
     
-    # reset working copy
+    # reset working copy'
     if not rev:
         output = sh(['git', 'pull'], cwd=dest)
           
