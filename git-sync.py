@@ -93,7 +93,7 @@ def sync_repo(repo, dest, branch, rev):
     
     # reset working copy'
     if not rev:
-        output = sh(['git', 'reset', '--hard', 'origin/{branch}'], cwd=dest)
+        output = sh(['git', 'pull', 'origin', branch], cwd=dest)
           
     # clean untracked files
     sh(['git', 'clean', '-dfq'], cwd=dest)
