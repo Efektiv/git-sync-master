@@ -42,7 +42,7 @@ def setup_repo(repo, dest, branch):
     repo_name = urlparse(repo).path
      
     # if no git repo exists at dest, clone the requested repo
-    if not os.path.exists(os.path.join('/git/', '.git')):
+    if not os.path.exists('/git/'):
         output = sh(
             ['git', 'pull', 'origin', branch])
         click.echo('Cloned ...{repo_name}'.format(**locals()))
