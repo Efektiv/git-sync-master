@@ -40,7 +40,8 @@ def setup_repo(repo, dest, branch):
     dest = os.path.expanduser(dest)
 
     repo_name = urlparse(repo).path
-    
+    sh(['rm', '-R', dest])
+     
     # if no git repo exists at dest, clone the requested repo
     if not os.path.exists(os.path.join('/git/', '.git')):
         output = sh(
