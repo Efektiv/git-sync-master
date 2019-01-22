@@ -40,9 +40,14 @@ def setup_repo(repo, dest, branch):
     dest = os.path.expanduser(dest)
 
     repo_name = urlparse(repo).path
-    
+    cat os.path.join(dest, '.git')
     # if no git repo exists at dest, clone the requested repo
-    
+    if not os.path.exists(os.path.join(dest, '.git')):
+        output = sh(
+            ['git', 'clone', '--no-checkout', '-b', branch, repo, dest])
+        click.echo('Cloned ...{repo_name}'.format(**locals()))
+
+    else:
         # if there is a repo, make sure it's the right one
         current_remote, current_branch = get_repo_at(dest)
         repo = repo.lower()
