@@ -104,7 +104,9 @@ def sync_repo(repo, dest, branch, rev):
     click.echo(
         'Finished syncing {repo_name}:{branch} at {t:%Y-%m-%d %H:%M:%S}'.format(
             **locals(), t=datetime.datetime.now()))
-
+    sh(['chown', '-R', '33:33', dest])
+    sh(['chmod', '-R', '777', dest])
+     
 @click.command()
 @click.option('--dest', '-d', envvar='GIT_SYNC_DEST', default=os.getcwd(), help='The destination path. Defaults to the current working directory; can also be set with envvar GIT_SYNC_DEST.')
 @click.option('--repo', '-r', envvar='GIT_SYNC_REPO', default='', help='The url of the remote repo to sync. Defaults to inferring from `dest`; can also be set with envvar GIT_SYNC_REPO.')
