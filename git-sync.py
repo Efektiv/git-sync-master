@@ -19,7 +19,7 @@ def sh(*args, **kwargs):
     return subprocess.check_output(*args, **kwargs).decode().strip()
 
 def get_repo_at(dest):
-    if not os.path.exists(os.path.join(dest, '.git')):
+    if not os.path.exists(dest):
         raise ValueError('No repo found at {dest}'.format(**locals))
 
     current_remote = sh(
@@ -42,7 +42,7 @@ def setup_repo(repo, dest, branch):
     repo_name = urlparse(repo).path
      
     # if no git repo exists at dest, clone the requested repo
-    if not os.path.exists(os.path.join(dest, '.git')):
+    if not os.path.exists(dest):
         output = sh(
             ['git', 'clone', '--no-checkout', '-b', branch, repo, dest])
         click.echo('Cloned ...{repo_name}'.format(**locals()))
@@ -93,7 +93,7 @@ def sync_repo(repo, dest, branch, rev):
     
     # reset working copy'
     if not rev:
-        output = sh(['git', 'pull'], cwd=dest)
+        output = sh(['git', 'reset', '--hard', 'origin/{branch}'], cwd=dest)
           
     # clean untracked files
     sh(['git', 'clean', '-dfq'], cwd=dest)
