@@ -11,5 +11,6 @@ COPY git-sync.py /git-sync.py
 RUN chmod +x /git-sync.py
 
 # run
+RUN mkdir /git
 ENV GIT_SYNC_DEST /git/
 ENTRYPOINT ["./git-sync.py"]
