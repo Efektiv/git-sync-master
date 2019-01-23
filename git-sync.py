@@ -91,7 +91,7 @@ def sync_repo(repo, dest, branch, rev):
     output = sh(['git', 'fetch', 'origin', branch], cwd=dest)
     click.echo('Fetched {branch}: {output}'.format(**locals()))
     
-    bkp = (branch + ' backup')     
+    bkp = (branch + '-backup')     
     output = sh(['git', 'checkout', '-b', bkp], cwd=dest)
 
     output = sh(['git', 'add', '.'], cwd=dest)
