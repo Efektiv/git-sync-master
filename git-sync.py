@@ -91,6 +91,17 @@ def sync_repo(repo, dest, branch, rev):
     output = sh(['git', 'fetch', 'origin', branch], cwd=dest)
     click.echo('Fetched {branch}: {output}'.format(**locals()))
     
+    bkp = (branch + ' backup')     
+    output = sh(['git', 'checkout', '-b', bkp], cwd=dest)
+
+    output = sh(['git', 'add', '.'], cwd=dest)
+    click.echo('Added all changes {output}'.format(**locals()))
+    msg = ('Backup of ' + branch)
+    output = sh(['git', 'commit', '-m', msg], cwd=dest)
+    output = sh(['git', 'push', 'origin', bkp], cwd=dest)
+    output = sh(['git', 'checkout', branch], cwd=dest)
+    
+    click.echo('Backup to {branch}: {output}'.format(**locals()))
     # reset working copy'
     if not rev:
         output = sh(['git', 'pull', 'origin', branch], cwd=dest)
