@@ -58,6 +58,9 @@ def setup_repo(repo, dest, branch):
         parsed_remote = urlparse(current_remote)
         parsed_repo = urlparse(repo)
 
+          
+    output = sh(['git', 'checkout', branch], cwd=dest)
+          
         if (    parsed_repo.netloc != parsed_remote.netloc
                 or parsed_repo.path != parsed_remote.path):
             raise ValueError(
