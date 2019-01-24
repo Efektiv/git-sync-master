@@ -19,7 +19,7 @@ def sh(*args, **kwargs):
     return subprocess.check_output(*args, **kwargs).decode().strip()
 
 def get_repo_at(dest):
-    if not os.path.exists(os.path.join(dest, '.git')):
+    if not os.path.exists(dest):
         raise ValueError('No repo found at {dest}'.format(**locals))
 
     current_remote = sh(
@@ -40,9 +40,9 @@ def setup_repo(repo, dest, branch):
     dest = os.path.expanduser(dest)
 
     repo_name = urlparse(repo).path
-
+     
     # if no git repo exists at dest, clone the requested repo
-    if not os.path.exists(os.path.join(dest, '.git')):
+    if not os.path.exists(dest):
         output = sh(
             ['git', 'clone', '--no-checkout', '-b', branch, repo, dest])
         click.echo('Cloned ...{repo_name}'.format(**locals()))
@@ -58,13 +58,16 @@ def setup_repo(repo, dest, branch):
         parsed_remote = urlparse(current_remote)
         parsed_repo = urlparse(repo)
 
+          
+    output = sh(['git', 'checkout', branch], cwd=dest)
+          
         if (    parsed_repo.netloc != parsed_remote.netloc
                 or parsed_repo.path != parsed_remote.path):
             raise ValueError(
                 'Requested repo `...{repo_name}` but destination already '
                 'has a remote repo cloned: {current_remote}'.format(**locals()))
 
-        # and check that the branches match as well
+         # and check that the branches match as well
         if branch.lower() != current_branch:
             raise ValueError(
                 'Requested branch `{branch}` but destination is '
@@ -75,11 +78,12 @@ def setup_repo(repo, dest, branch):
         # ahead_status: commited but not pushed
         modified_status = sh(shlex.split('git status -s'), cwd=dest)
         ahead_status = sh(shlex.split('git status -sb'), cwd=dest)[3:]
-        click.echo('Status {modified_status}: {ahead_status}'.format(**locals()))
-        sh(shlex.split('git add .'), cwd=dest)
         if modified_status:
-            sh(shlex.split('git commit -m "Save Modified"'), cwd=dest)
-
+            sh(shlex.split('git stash'), cwd=dest)
+        if '[ahead ' in ahead_status:
+            raise ValueError(
+                'This branch is ahead of the requested repo and syncing would '
+                'overwrite the changes: {ahead_status}'.format(**locals()))
 
 def sync_repo(repo, dest, branch, rev):
     """
@@ -89,17 +93,22 @@ def sync_repo(repo, dest, branch, rev):
     # fetch branch
     output = sh(['git', 'fetch', 'origin', branch], cwd=dest)
     click.echo('Fetched {branch}: {output}'.format(**locals()))
-     
-    output = sh(['git', 'stash'], cwd=dest)
-    click.echo('Stashed: {output}'.format(**locals()))
-     
-    # reset working copy
-    if not rev:
-        output = sh(['git', 'pull'], cwd=dest)
+    
+    bkp = (branch + '-backup')     
+    output = sh(['git', 'checkout', bkp], cwd=dest)
 
-    output = sh(['git', 'apply'], cwd=dest)
-    click.echo('Applied: {output}'.format(**locals()))
-     
+    output = sh(['git', 'add', '.'], cwd=dest)
+    click.echo('Added all changes {output}'.format(**locals()))
+    msg = ('Backup of ' + branch)
+    output = sh(['git', 'commit', '-m', msg], cwd=dest)
+    output = sh(['git', 'push', 'origin', bkp], cwd=dest)
+    output = sh(['git', 'checkout', branch], cwd=dest)
+    
+    click.echo('Backup to {branch}: {output}'.format(**locals()))
+    # reset working copy'
+    if not rev:
+        output = sh(['git', 'pull', 'origin', branch], cwd=dest)
+          
     # clean untracked files
     sh(['git', 'clean', '-dfq'], cwd=dest)
 
@@ -109,7 +118,9 @@ def sync_repo(repo, dest, branch, rev):
     click.echo(
         'Finished syncing {repo_name}:{branch} at {t:%Y-%m-%d %H:%M:%S}'.format(
             **locals(), t=datetime.datetime.now()))
-
+    sh(['chown', '-R', '33:33', dest])
+    sh(['chmod', '-R', '777', dest])
+     
 @click.command()
 @click.option('--dest', '-d', envvar='GIT_SYNC_DEST', default=os.getcwd(), help='The destination path. Defaults to the current working directory; can also be set with envvar GIT_SYNC_DEST.')
 @click.option('--repo', '-r', envvar='GIT_SYNC_REPO', default='', help='The url of the remote repo to sync. Defaults to inferring from `dest`; can also be set with envvar GIT_SYNC_REPO.')
