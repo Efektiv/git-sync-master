@@ -96,7 +96,7 @@ def sync_repo(repo, dest, branch, rev):
 
     # reset working copy
     # if not rev:
-        output = sh(['./backup.sh', branch], cwd=dest)
+    output = sh(['./backup.sh', branch], cwd=dest)
     # else:
         # output = sh(['git', 'reset', '--hard', rev], cwd=dest)
 
