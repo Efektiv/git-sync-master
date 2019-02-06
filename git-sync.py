@@ -19,7 +19,7 @@ def sh(*args, **kwargs):
     return subprocess.check_output(*args, **kwargs).decode().strip()
 
 def get_repo_at(dest):
-    if not os.path.exists(dest):
+    if not os.path.exists(dest+"/.git"):
         raise ValueError('No repo found at {dest}'.format(**locals))
 
     current_remote = sh(
@@ -58,9 +58,6 @@ def setup_repo(repo, dest, branch):
         parsed_remote = urlparse(current_remote)
         parsed_repo = urlparse(repo)
 
-          
-    output = sh(['git', 'checkout', branch], cwd=dest)
-          
         if (    parsed_repo.netloc != parsed_remote.netloc
                 or parsed_repo.path != parsed_remote.path):
             raise ValueError(
@@ -94,25 +91,15 @@ def sync_repo(repo, dest, branch, rev):
     output = sh(['git', 'fetch', 'origin', branch], cwd=dest)
     click.echo('Fetched {branch}: {output}'.format(**locals()))
     
-    bkp = (branch + '-backup')     
-    output = sh(['git', 'checkout', bkp], cwd=dest)
-
-    output = sh(['git', 'add', '.'], cwd=dest)
-    click.echo('Added all changes {output}'.format(**locals()))
-    msg = ('Backup of ' + branch)
-    output = sh(['git', 'commit', '-m', msg], cwd=dest)
-    output = sh(['git', 'push', 'origin', bkp], cwd=dest)
-    output = sh(['git', 'checkout', branch], cwd=dest)
-    
-    click.echo('Backup to {branch}: {output}'.format(**locals()))
     # reset working copy'
-    if not rev:
-        output = sh(['git', 'pull', 'origin', branch], cwd=dest)
+    # if not rev:
+        # output = sh(['git', 'pull', 'origin', branch], cwd=dest)
           
     # clean untracked files
     sh(['git', 'clean', '-dfq'], cwd=dest)
+    # click.echo('Reset to {rev}: {output}'.format(**locals()))
 
-    click.echo('Reset to {rev}: {output}'.format(**locals()))
+    sh(['rm', '-R', '/var/www/html/lost+found'], cwd=dest)
 
     repo_name = urlparse(repo).path
     click.echo(
