@@ -94,16 +94,7 @@ def sync_repo(repo, dest, branch, rev):
     output = sh(['git', 'fetch', 'origin', branch], cwd=dest)
     click.echo('Fetched {branch}: {output}'.format(**locals()))
 
-    # reset working copy
-    # if not rev:
-    output = sh(['./backup.sh', branch], cwd=dest)
-    # else:
-        # output = sh(['git', 'reset', '--hard', rev], cwd=dest)
-
-    # clean untracked files
-    sh(['git', 'clean', '-dfq'], cwd=dest)
-
-    click.echo('Reset to {rev}: {output}'.format(**locals()))
+    sh(['./backup.sh', branch], cwd=dest)
 
     repo_name = urlparse(repo).path
     click.echo(
