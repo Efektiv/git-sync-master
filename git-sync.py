@@ -92,8 +92,8 @@ def sync_repo(repo, dest, branch, rev):
     click.echo('Fetched {branch}: {output}'.format(**locals()))
     
     # reset working copy'
-    # if not rev:
-        # output = sh(['git', 'pull', 'origin', branch], cwd=dest)
+    if not rev:
+        output = sh(['git', 'checkout', branch], cwd=dest)
           
     # clean untracked files
     sh(['git', 'clean', '-dfq'], cwd=dest)
