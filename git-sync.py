@@ -94,7 +94,7 @@ def sync_repo(repo, dest, branch, rev):
     output = sh(['git', 'fetch', 'origin', branch], cwd=dest)
     click.echo('Fetched {branch}: {output}'.format(**locals()))
 
-    sh(['./backup.sh', branch], cwd=dest)
+    sh(['backup.sh', branch], cwd=dest)
 
     repo_name = urlparse(repo).path
     click.echo(
