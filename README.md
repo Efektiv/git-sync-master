@@ -1,6 +1,3 @@
-### Build Status
+### v3.0.4
 
-### Environments attached to
-
-### Repos Syncing
-
+Pipeline will only build if changes
